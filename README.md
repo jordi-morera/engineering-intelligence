@@ -1,51 +1,73 @@
-<<<<<<< HEAD
-# engineering-intelligence
-Agent that converts tickets into validated specifications before deploying
-=======
 # Engineering Intelligence
 
-An AI-powered engineering intelligence system designed to transform engineering work
-items into **validated specifications before implementation**.
+> An AI agent that turns engineering tickets into **validated, evidence-backed specifications before any code is written**.
 
-## Core philosophy
+Most AI coding tools jump straight to implementation. Engineering Intelligence deliberately does the opposite: it investigates, specifies, critiques and validates the work first — and hands a human-approved spec to implementation only when the uncertainty is gone.
 
 ```
-WHAT + WHY        (understanding, investigating, specifying)
+WHAT + WHY        (understand, investigate, specify)
      before
-HOW + DO          (implementation)
+HOW + DO          (implement)
 ```
 
-Engineering Intelligence focuses entirely on the first half. Understanding must come
-before doing.
+## Core features
+
+- **Spec-first agent** — an `EngineeringAgent` that reasons about requirements and bugs under explicit engineering principles (evidence over assumptions; facts, assumptions and unknowns kept separate).
+- **Skill contracts** — 10 reusable skills that encode the methodology, each with purpose, inputs, outputs, rules and failure handling.
+- **Declarative workflows** — ordered, auditable steps for `requirement` and `bug` work items, with a quality gate: a spec reaches `READY_FOR_IMPLEMENTATION` only after research, critique and validation; a critical uncertainty results in `BLOCKED`, never an invented answer.
+- **Structured output contract** — a versioned YAML schema for Engineering Specifications (requirements, acceptance criteria, evidence, confidence levels, critiques).
+- **Evaluation-first mindset** — metrics defined up front (research accuracy, root-cause accuracy, unsupported assumptions, human corrections, token usage…), so the agent is judged on correctness, not on convincing-looking documents.
+- **Read-only by design** — the system never modifies code, tickets or branches.
+- **Tested foundation** — unit tests for the agent, configuration, schema and workflows; the LLM client is injectable for testing.
 
 ## System boundaries
 
-The project is conceptually divided into two systems:
+### System 1 — Engineering Intelligence (WHAT + WHY) · *this repository*
+Understands Jira tickets, researches documentation and repositories, identifies requirements and root causes, produces evidence-backed specifications, critiques and validates them, and requires human approval before implementation. **It never modifies source code.**
 
-### System 1 — Engineering Intelligence (WHAT + WHY)
-Investigates and understands engineering work. It is capable of understanding Jira
-tickets, researching documentation and repositories, identifying requirements and root
-causes, producing evidence-backed specifications, critiquing and validating them, and
-requiring human approval before implementation. **It never modifies source code.**
+### System 2 — Engineering Execution (HOW + DO) · *out of scope for now*
+Consumes an approved specification and performs implementation, tests, static analysis, self-review, pull request creation and Jira updates.
 
-### System 2 — Engineering Execution (HOW + DO)
-Consumes an approved specification and performs implementation, tests, static analysis,
-self-review, pull request creation, and Jira updates. **Out of scope for now.**
+## Skills
 
-## Current scope
+| Skill | Purpose |
+|---|---|
+| `jira-analysis` | Parse a Jira work item (requirement or bug) into structured context |
+| `confluence-research` | Discover and extract related documentation |
+| `repository-research` | Ground the work item in the actual codebase |
+| `requirements-analysis` | Derive clear, testable requirements |
+| `technical-analysis` | Assess feasibility, constraints, dependencies and risks |
+| `bug-investigation` | Capture symptoms, reproduce, gather evidence |
+| `root-cause-analysis` | Identify the root cause, backed by evidence and a confidence level |
+| `specification-writing` | Produce a spec that conforms to the schema |
+| `specification-critique` | Surface gaps, contradictions and unsupported assumptions |
+| `specification-validation` | Confirm evidence is sound and critical unknowns are resolved |
 
-This is an early foundation. The current implementation is a minimal, runnable
-`EngineeringAgent` that composes a system prompt and a user message and calls an LLM.
-It does **not** yet integrate with Jira, Confluence, or repositories. Those are future
-capabilities; the architecture is designed so they can be added without rewriting the core.
+## Workflows
+
+| Workflow | Steps |
+|---|---|
+| **Requirement** | analyze ticket → discover documentation → research repository → define requirements → technical analysis → create spec → critique → validate |
+| **Bug** | analyze ticket → discover documentation → investigate bug → research repository → identify root cause → propose solution → create spec → critique → validate |
+
+## Target architecture
+
+```
+Jira → Agent → Research (Confluence, Repository) → Evidence → Specification
+     → Critic → Validation → Human Approval → System 2
+```
+
+## Current status
+
+This is an early, deliberately minimal foundation. Today the runnable part is an `EngineeringAgent` that composes the system prompt (`prompts/system.md`) with a user question and calls an LLM through a thin client. The skills, workflows, schema and evaluation strategy define the methodology the agent will execute as integrations (Jira, Confluence, repositories) are added — without rewriting the core.
 
 ## Project structure
 
 ```
 src/            Core Python code (agent, LLM client, config, entry point)
-skills/         Skill contracts (methodology for future capabilities)
-prompts/        Prompt templates (e.g. system.md)
-schemas/        Structured contracts (e.g. engineering-spec.yaml)
+skills/         Skill contracts (methodology for each capability)
+prompts/        Prompt templates (system.md)
+schemas/        Structured contracts (engineering-spec.yaml)
 workflows/      Workflow definitions (requirement.yaml, bug.yaml)
 specs/          Output location for produced specifications
 evaluations/    Evaluation strategy and metrics
@@ -54,6 +76,8 @@ tests/          Unit tests
 ```
 
 ## Setup
+
+Requires Python 3.12+.
 
 ```bash
 python -m venv .venv
@@ -65,44 +89,17 @@ cp .env.example .env   # then add your OPENAI_API_KEY
 ## Run
 
 ```bash
-python -m src.main
+python -m src.main "How should we investigate an intermittent 500 on the checkout endpoint?"
 ```
 
 Without an API key, the application prints a clear configuration error and exits.
 
-## Run tests
+## Tests
 
 ```bash
 pytest
 ```
 
-## Future architecture
+## License
 
-```
-Jira
- ↓
-Agent
- ↓
-Research
- ├── Confluence
- └── Repository
- ↓
-Evidence
- ↓
-Specification
- ↓
-Critic
- ↓
-Validation
- ↓
-Human Approval
- ↓
-System 2
-```
-
-## Read-only by default
-
-Engineering Intelligence is fundamentally an investigation/specification system.
-External integrations should initially be read-only. The foundation contains no
-mechanisms for modifying repositories, tickets, or branches.
->>>>>>> 5ba99c3 (Initial commit)
+MIT
