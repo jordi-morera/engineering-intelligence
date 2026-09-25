@@ -1,0 +1,77 @@
+# Bug Workflow — Engineering Intelligence
+#
+# This file defines methodology and guardrails, not an orchestration engine.
+# It declares the ordered steps to investigate a bug work item,
+# identify a root cause, and produce a validated specification.
+
+name: bug
+description: >
+  Investigate a bug work item, discover relevant documentation,
+  identify the root cause from evidence, propose a solution,
+  and produce a validated specification.
+
+type: bug
+
+# Gate: READY_FOR_IMPLEMENTATION is only reached after research,
+# critique, and validation. A critical uncertainty results in BLOCKED.
+
+steps:
+  - id: analyze_ticket
+    name: Analyze the ticket
+    description: >
+      Read the bug report, capture symptoms, expected vs actual
+      behavior, and reproduction steps.
+
+  - id: discover_documentation
+    name: Discover documentation
+    description: >
+      Locate relevant docs, runbooks, ADRs, and prior issue
+      history that contextualize the bug.
+
+  - id: investigate_bug
+    name: Investigate bug
+    description: >
+      Reproduce, trace, and gather evidence about the failure
+      mode. Record facts, assumptions, and unknowns.
+
+  - id: research_repository
+    name: Research repository
+    description: >
+      Inspect the relevant source code paths implicated by the
+      evidence. Read-only.
+
+  - id: identify_root_cause
+    name: Identify root cause
+    description: >
+      Determine the root cause with supporting evidence and a
+      confidence level. Distinguish it from contributing factors.
+
+  - id: propose_solution
+    name: Propose solution
+    description: >
+      Propose a solution to the root cause, considering
+      alternatives and their trade-offs.
+
+  - id: create_spec
+    name: Create specification
+    description: >
+      Produce the engineering specification document following
+      schemas/engineering-spec.yaml.
+
+  - id: critique_spec
+    name: Critique specification
+    description: >
+      Review the specification for unsupported root-cause claims,
+      gaps, and contradictions.
+
+  - id: validate_spec
+    name: Validate specification
+    description: >
+      Confirm the root cause is evidence-backed and the solution
+      addresses it. Move to READY_FOR_IMPLEMENTATION or BLOCKED.
+
+guardrails:
+  - Do not modify source code at any stage.
+  - Distinguish facts, assumptions, and unknowns in every step.
+  - The root cause must cite evidence, not speculation.
+  - Block if a critical uncertainty or contradiction remains.

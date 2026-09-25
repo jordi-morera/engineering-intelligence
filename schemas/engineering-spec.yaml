@@ -1,0 +1,87 @@
+# Engineering Specification — Contract (V0)
+#
+# This schema defines the structure of an Engineering Specification.
+# It supports both "requirement" and "bug" work item types.
+#
+# Principles:
+#   - Evidence over assumptions
+#   - Facts / assumptions / unknowns are kept distinct
+#   - A critical uncertainty results in BLOCKED, not an invented answer
+#
+# This is a V0 contract and will evolve.
+
+spec:
+  id: ""                  # unique identifier for this specification
+  version: "0.1.0"        # schema version this document conforms to
+  type: requirement       # requirement | bug
+  source:                 # the originating work item (e.g. Jira)
+    system: ""            # e.g. jira
+    ticket_id: ""
+    title: ""
+    url: ""
+    raw_text: ""
+
+  objective: ""           # one-paragraph statement of what the work intends to achieve
+
+  requirements:           # functional and non-functional requirements
+    - id: "REQ-001"
+      description: ""
+      acceptance_criteria: []   # list of testable acceptance statements
+      evidence: []
+      status: draft       # draft | validated | blocked
+
+  research:               # what was researched during this work
+    documentation: []     # list of {source, summary, evidence}
+    repositories: []      # list of {repo, path, summary, evidence}
+    notes: ""
+
+  technical_context:      # relevant technical details, constraints, architecture
+    description: ""
+    constraints: []
+    dependencies: []
+    evidence: []
+
+  assumptions:            # stated assumptions, marked clearly as unverified
+    - statement: ""
+      verified: false
+      reason: ""
+
+  open_questions:         # questions that remain unanswered or need clarification
+    - question: ""
+      necessary: true     # true = must be answered before implementation
+      state: unanswered   # unanswered | answered | blocked
+
+  root_cause:             # only for bugs; empty / not applicable for requirements
+    analysis: ""
+    evidence: []
+    determinant: ""       # the identified root cause
+    confidence: unknown   # unknown | low | medium | high
+
+  proposed_solution:
+    description: ""
+    alternatives: []      # considered alternatives and why they were rejected
+    evidence: []
+
+  implementation_plan:    # high-level steps; detail belongs to System 2
+    - step: ""
+      detail: ""
+
+  tests:
+    unit: []
+    integration: []
+    acceptance: []
+
+  acceptance_criteria: []  # overall criteria the work must satisfy
+
+  risks:
+    - description: ""
+      likelihood: unknown   # unknown | low | medium | high
+      impact: unknown       # unknown | low | medium | high
+      mitigation: ""
+
+  validation:
+    status: draft         # lifecycle state, see Specification Lifecycle
+    confidence: unknown   # unknown | low | medium | high
+    critiques: []         # list of critiques received and dispositions
+    validated_by: ""      # human or process that validated
+    validated_at: ""

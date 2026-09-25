@@ -1,0 +1,71 @@
+# Requirement Workflow — Engineering Intelligence
+#
+# This file defines methodology and guardrails, not an orchestration engine.
+# It declares the ordered steps to analyze a requirement work item
+# and produce a validated engineering specification.
+
+name: requirement
+description: >
+  Analyze a requirement work item, research available context,
+  define requirements, and produce a validated specification.
+
+type: requirement
+
+# Gate: READY_FOR_IMPLEMENTATION is only reached after research,
+# critique, and validation. A critical uncertainty results in BLOCKED.
+
+steps:
+  - id: analyze_ticket
+    name: Analyze the ticket
+    description: >
+      Read the work item, extract the objective, and identify
+      what is known, assumed, and unknown.
+    requires_clarification: true
+
+  - id: discover_documentation
+    name: Discover documentation
+    description: >
+      Locate relevant Confluence/docs pages, standards, and ADRs
+      that provide context for the requirement.
+
+  - id: research_repository
+    name: Research repository
+    description: >
+      Inspect relevant source code to ground the requirement in
+      the actual codebase. Read-only.
+
+  - id: define_requirements
+    name: Define requirements
+    description: >
+      Write clear, testable functional and non-functional
+      requirements with acceptance criteria.
+
+  - id: technical_analysis
+    name: Technical analysis
+    description: >
+      Assess feasibility, constraints, dependencies, and risks
+      against the technical context.
+
+  - id: create_spec
+    name: Create specification
+    description: >
+      Produce the engineering specification document following
+      schemas/engineering-spec.yaml.
+
+  - id: critique_spec
+    name: Critique specification
+    description: >
+      Review the specification for gaps, contradictions, and
+      unsupported assumptions. Apply second-pass reasoning.
+
+  - id: validate_spec
+    name: Validate specification
+    description: >
+      Confirm evidence is sound, requirements are testable, and
+      all critical unknowns are resolved. Move to
+      READY_FOR_IMPLEMENTATION or BLOCKED accordingly.
+
+guardrails:
+  - Do not modify source code at any stage.
+  - Distinguish facts, assumptions, and unknowns in every step.
+  - Block if a critical uncertainty or contradiction remains.
